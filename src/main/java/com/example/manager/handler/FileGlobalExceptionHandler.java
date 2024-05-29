@@ -1,5 +1,7 @@
 package com.example.manager.handler;
 
+import com.example.manager.exception.AudioFileNotFoundException;
+import com.example.manager.exception.NotAddInfoToFileException;
 import com.example.manager.exception.NotSaveFileException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,5 +21,25 @@ public class FileGlobalExceptionHandler {
         log.error("Exception occurred with HTTP status {}: {}", HttpStatus.BAD_REQUEST.value(),
                 exception.getLocalizedMessage());
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<AudioFileNotFoundData> handlerException(AudioFileNotFoundException exception) {
+        AudioFileNotFoundData data = AudioFileNotFoundData.builder()
+                .info(exception.getMessage()).build();
+        log.error("Exception occurred with HTTP status {}: {}", HttpStatus.NOT_FOUND.value(),
+                exception.getLocalizedMessage());
+        return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<AudioFileNotFoundData> handlerException(NotAddInfoToFileException exception) {
+        AudioFileNotFoundData data = AudioFileNotFoundData.builder()
+                .info(exception.getMessage()).build();
+        log.error("Exception occurred with HTTP status {}: {}", HttpStatus.CONFLICT.value(),
+                exception.getLocalizedMessage());
+        return new ResponseEntity<>(data, HttpStatus.CONFLICT);
     }
 }

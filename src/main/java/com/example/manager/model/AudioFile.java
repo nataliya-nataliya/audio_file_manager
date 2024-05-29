@@ -3,7 +3,7 @@ package com.example.manager.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Builder
 @NoArgsConstructor
@@ -18,7 +18,7 @@ public class AudioFile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private final LocalDateTime date = LocalDateTime.now();
+    private LocalDate date = LocalDate.now();
 
     @Column(name = "file_name", length = 64)
     private String fileName;
