@@ -59,20 +59,19 @@ public class AudioFileController {
             @ApiResponse(responseCode = "409", description = "Info about audio file is not added", content = @Content)})
     @PutMapping("/{id}")
     public ResponseEntity<AddingInfoAudioFileResponseDto> addInfoAboutAudioFile(
-            @PathVariable String id,
+            @Parameter(description = "id of audio file")  @PathVariable long id,
             @RequestBody SavingAudioFileInfoRequestDto infoRequestDto) {
         AddingInfoAudioFileResponseDto responseDto = new AddingInfoAudioFileResponseDto();
-        long idAudioFile = Long.parseLong(id);
-        Optional<AudioFile> audioFileOptional = audioFileService.findById(idAudioFile);
+        Optional<AudioFile> audioFileOptional = audioFileService.findById(id);
         if (audioFileOptional.isPresent()) {
             if (audioFileService.addInfoToAudioFile(audioFileOptional.get(), infoRequestDto).isPresent()) {
-                responseDto.setId(idAudioFile);
+                responseDto.setId(id);
                 responseDto.setStatus(true);
             } else {
                 throw new NotAddInfoToFileException("Info is not added");
             }
         } else {
-            throw new AudioFileNotFoundException(String.format("Audio file with id %d is not found", idAudioFile));
+            throw new AudioFileNotFoundException(String.format("Audio file with id %d is not found", id));
         }
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
