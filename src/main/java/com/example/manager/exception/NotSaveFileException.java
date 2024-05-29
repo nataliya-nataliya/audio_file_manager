@@ -1,4 +1,4 @@
-package com.example.audio_file_manager.exception;
+package com.example.manager.exception;
 
 public class NotSaveFileException extends RuntimeException {
     public NotSaveFileException(String message) {

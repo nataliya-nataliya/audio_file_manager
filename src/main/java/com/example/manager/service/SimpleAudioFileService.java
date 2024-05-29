@@ -1,8 +1,8 @@
-package com.example.audio_file_manager.service;
+package com.example.manager.service;
 
-import com.example.audio_file_manager.dto.request.SavingAudioFileRequestDto;
-import com.example.audio_file_manager.model.AudioFile;
-import com.example.audio_file_manager.repository.AudioFileRepository;
+import com.example.manager.dto.request.SavingAudioFileRequestDto;
+import com.example.manager.model.AudioFile;
+import com.example.manager.repository.AudioFileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

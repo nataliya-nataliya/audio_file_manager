@@ -8,7 +8,7 @@
 		<version>3.2.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
+	<groupId>com.example.manager</groupId>
 	<artifactId>audio_file_manager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>audio_file_manager</name>
@@ -68,6 +68,7 @@
 				<version>3.10.0.2594</version>
 			</plugin>
 		</plugins>
+		<finalName>audio_file_manager</finalName>
 	</build>
 
 </project>
