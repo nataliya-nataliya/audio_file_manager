@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -37,13 +37,12 @@ public class SimpleAudioFileService implements AudioFileService {
 
     @Override
     public Optional<AudioFile> addInfoToAudioFile(AudioFile audioFile, SavingAudioFileInfoRequestDto infoRequestDto) {
-        LocalDate date = LocalDate.from(mapper.dtoToEntity(infoRequestDto).getDate());
+        LocalDateTime date = LocalDateTime.from(mapper.dtoToEntity(infoRequestDto).getDate());
         audioFile.setFileName(infoRequestDto.getFileName());
         audioFile.setDate(date);
         audioFile.setDuration(infoRequestDto.getDuration());
         return Optional.of(audioFileRepository.save(audioFile));
     }
-
 
     @Override
     public Optional<AudioFile> findById(long id) {
@@ -51,7 +50,7 @@ public class SimpleAudioFileService implements AudioFileService {
     }
 
 
-    private String getNewFilePath(String sourceName) {
+    public String getNewFilePath(String sourceName) {
         return storageDirectory + java.io.File.separator + sourceName;
     }
 

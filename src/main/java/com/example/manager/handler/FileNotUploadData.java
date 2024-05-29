@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class FileNotSaveData {
+public class FileNotUploadData {
     private String info;
 }
