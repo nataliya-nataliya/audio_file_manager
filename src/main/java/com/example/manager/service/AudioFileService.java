@@ -11,6 +11,8 @@ public interface AudioFileService {
     void save(SavingAudioFileRequestDto savingAudioFileRequestDto) throws IOException;
 
     Optional<AudioFile> addInfoToAudioFile(AudioFile audioFile, SavingAudioFileInfoRequestDto infoRequestDto);
+
     Optional<AudioFile> findById(long id);
 
+    String getNewFilePath(String sourceName);
 }
