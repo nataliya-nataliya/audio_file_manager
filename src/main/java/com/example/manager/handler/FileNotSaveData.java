@@ -1,4 +1,4 @@
-package com.example.audio_file_manager.handler;
+package com.example.manager.handler;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class AudioFileNotFoundData {
+public class FileNotSaveData {
     private String info;
 }

@@ -1,14 +1,14 @@
-package com.example.audio_file_manager.controller;
+package com.example.manager.controller;
 
-import com.example.audio_file_manager.dto.request.SavingAudioFileInfoRequestDto;
-import com.example.audio_file_manager.dto.request.SavingAudioFileRequestDto;
-import com.example.audio_file_manager.dto.response.AddingInfoAudioFileResponseDto;
-import com.example.audio_file_manager.dto.response.SavingAudioFileResponseDto;
-import com.example.audio_file_manager.exception.AudioFileNotFoundException;
-import com.example.audio_file_manager.exception.NotAddInfoToFileException;
-import com.example.audio_file_manager.exception.NotSaveFileException;
-import com.example.audio_file_manager.model.AudioFile;
-import com.example.audio_file_manager.service.AudioFileService;
+import com.example.manager.dto.request.SavingAudioFileInfoRequestDto;
+import com.example.manager.dto.request.SavingAudioFileRequestDto;
+import com.example.manager.dto.response.AddingInfoAudioFileResponseDto;
+import com.example.manager.dto.response.SavingAudioFileResponseDto;
+import com.example.manager.exception.AudioFileNotFoundException;
+import com.example.manager.exception.NotAddInfoToFileException;
+import com.example.manager.exception.NotSaveFileException;
+import com.example.manager.model.AudioFile;
+import com.example.manager.service.AudioFileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

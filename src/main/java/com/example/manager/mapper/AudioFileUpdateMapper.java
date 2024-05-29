@@ -1,7 +1,8 @@
-package com.example.audio_file_manager.mapper;
+package com.example.manager.mapper;
 
-import com.example.audio_file_manager.dto.request.SavingAudioFileInfoRequestDto;
-import com.example.audio_file_manager.model.AudioFile;
+
+import com.example.manager.dto.request.SavingAudioFileInfoRequestDto;
+import com.example.manager.model.AudioFile;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

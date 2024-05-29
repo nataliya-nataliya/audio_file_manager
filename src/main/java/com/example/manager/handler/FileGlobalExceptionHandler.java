@@ -1,8 +1,8 @@
-package com.example.audio_file_manager.handler;
+package com.example.manager.handler;
 
-import com.example.audio_file_manager.exception.AudioFileNotFoundException;
-import com.example.audio_file_manager.exception.NotAddInfoToFileException;
-import com.example.audio_file_manager.exception.NotSaveFileException;
+import com.example.manager.exception.AudioFileNotFoundException;
+import com.example.manager.exception.NotAddInfoToFileException;
+import com.example.manager.exception.NotSaveFileException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

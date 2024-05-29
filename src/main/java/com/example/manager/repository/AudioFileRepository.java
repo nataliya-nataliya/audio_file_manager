@@ -1,6 +1,6 @@
-package com.example.audio_file_manager.repository;
+package com.example.manager.repository;
 
-import com.example.audio_file_manager.model.AudioFile;
+import com.example.manager.model.AudioFile;
 import org.springframework.data.repository.CrudRepository;
 
 public interface AudioFileRepository extends CrudRepository<AudioFile, Long> {

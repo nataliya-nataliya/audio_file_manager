@@ -1,4 +1,4 @@
-package com.example.audio_file_manager.model;
+package com.example.manager.model;
 
 import jakarta.persistence.*;
 import lombok.*;

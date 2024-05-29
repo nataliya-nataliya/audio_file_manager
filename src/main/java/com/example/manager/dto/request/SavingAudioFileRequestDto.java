@@ -1,4 +1,4 @@
-package com.example.audio_file_manager.dto.request;
+package com.example.manager.dto.request;
 
 import lombok.*;
 

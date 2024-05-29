@@ -1,8 +1,8 @@
-package com.example.audio_file_manager.service;
+package com.example.manager.service;
 
-import com.example.audio_file_manager.dto.request.SavingAudioFileInfoRequestDto;
-import com.example.audio_file_manager.dto.request.SavingAudioFileRequestDto;
-import com.example.audio_file_manager.model.AudioFile;
+import com.example.manager.dto.request.SavingAudioFileInfoRequestDto;
+import com.example.manager.dto.request.SavingAudioFileRequestDto;
+import com.example.manager.model.AudioFile;
 
 import java.io.IOException;
 import java.util.Optional;
