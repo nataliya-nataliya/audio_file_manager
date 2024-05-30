@@ -7,9 +7,15 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AddingInfoAudioFileResponseDto {
+public class GettingAudioFileInfoResponseDto {
 
     private boolean status;
 
     private long id;
+
+    private String date;
+
+    private String fileName;
+
+    private int duration;
 }

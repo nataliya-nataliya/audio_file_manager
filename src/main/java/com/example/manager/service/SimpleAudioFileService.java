@@ -2,6 +2,7 @@ package com.example.manager.service;
 
 import com.example.manager.dto.request.SavingAudioFileInfoRequestDto;
 import com.example.manager.dto.request.SavingAudioFileRequestDto;
+import com.example.manager.dto.response.GettingAudioFileInfoResponseDto;
 import com.example.manager.mapper.AudioFileUpdateMapper;
 import com.example.manager.model.AudioFile;
 import com.example.manager.repository.AudioFileRepository;
@@ -15,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -23,7 +25,9 @@ public class SimpleAudioFileService implements AudioFileService {
     private final AudioFileRepository audioFileRepository;
     @Value("${file.directory}")
     private String storageDirectory;
-    private final AudioFileUpdateMapper mapper;
+    private final AudioFileUpdateMapper updateMapper;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
 
     @Override
     public void save(SavingAudioFileRequestDto savingAudioFileRequestDto) throws IOException {
@@ -38,7 +42,7 @@ public class SimpleAudioFileService implements AudioFileService {
 
     @Override
     public Optional<AudioFile> addInfoToAudioFile(AudioFile audioFile, SavingAudioFileInfoRequestDto infoRequestDto) {
-        LocalDateTime date = LocalDateTime.from(mapper.dtoToEntity(infoRequestDto).getDate());
+        LocalDateTime date = LocalDateTime.from(updateMapper.dtoToEntity(infoRequestDto).getDate());
         audioFile.setFileName(infoRequestDto.getFileName());
         audioFile.setDate(date);
         audioFile.setDuration(infoRequestDto.getDuration());
@@ -78,5 +82,18 @@ public class SimpleAudioFileService implements AudioFileService {
         Path filePath = Paths.get(storageDirectory + java.io.File.separator + audioFile.getFileName());
         Files.deleteIfExists(filePath);
         audioFileRepository.deleteById(audioFile.getId());
+    }
+
+    @Override
+    public GettingAudioFileInfoResponseDto getAudioFileInfo(AudioFile audioFile) {
+        LocalDateTime dateTime = audioFile.getDate();
+        String date = (dateTime != null) ? dateTime.format(formatter) : null;
+        return GettingAudioFileInfoResponseDto.builder()
+                .fileName(audioFile.getFileName())
+                .duration(audioFile.getDuration())
+                .id(audioFile.getId())
+                .date(date)
+                .build();
+
     }
 }
