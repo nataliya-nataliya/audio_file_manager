@@ -7,6 +7,7 @@ import com.example.manager.dto.response.GettingAudioFileResponseDto;
 import com.example.manager.dto.response.SavingAudioFileResponseDto;
 import com.example.manager.exception.AudioFileNotFoundException;
 import com.example.manager.exception.NotAddInfoToFileException;
+import com.example.manager.exception.NotFormatFileException;
 import com.example.manager.exception.NotUploadFileException;
 import com.example.manager.model.AudioFile;
 import com.example.manager.service.AudioFileService;
@@ -38,6 +39,7 @@ public class AudioFileController {
     @Operation(summary = "Save audio file")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Audio file is saved"),
+            @ApiResponse(responseCode = "415", description = "It's not audio file"),
             @ApiResponse(responseCode = "500", description = "Audio file can not be uploaded", content = @Content)})
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SavingAudioFileResponseDto> saveAudioFile(@Parameter(description = "input audio file")
@@ -45,7 +47,11 @@ public class AudioFileController {
                                                                     @RequestParam MultipartFile file) {
         SavingAudioFileResponseDto audioFileResponseDto = new SavingAudioFileResponseDto();
         try {
-            audioFileService.save(new SavingAudioFileRequestDto(file.getOriginalFilename(), file.getBytes()));
+            SavingAudioFileRequestDto requestDto = new SavingAudioFileRequestDto(file.getOriginalFilename(), file.getBytes());
+            if (!audioFileService.isAudioFile(requestDto)) {
+                throw new NotFormatFileException("It's not audio file");
+            }
+                    audioFileService.save(requestDto);
             audioFileResponseDto.setStatus(true);
         } catch (IOException ex) {
             throw new NotUploadFileException("File not saved");
