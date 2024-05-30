@@ -9,6 +9,7 @@ import com.example.manager.repository.AudioFileRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -94,6 +95,16 @@ public class SimpleAudioFileService implements AudioFileService {
                 .id(audioFile.getId())
                 .date(date)
                 .build();
+    }
 
+    public Resource getFile(AudioFile audioFile) {
+        Path filePath = Paths.get(storageDirectory, audioFile.getFileName());
+        Resource fileResource = null;
+        try {
+            fileResource = new org.springframework.core.io.UrlResource(filePath.toUri());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileResource;
     }
 }
