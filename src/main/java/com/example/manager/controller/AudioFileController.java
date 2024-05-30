@@ -3,12 +3,10 @@ package com.example.manager.controller;
 import com.example.manager.dto.request.SavingAudioFileInfoRequestDto;
 import com.example.manager.dto.request.SavingAudioFileRequestDto;
 import com.example.manager.dto.response.AddingInfoAudioFileResponseDto;
+import com.example.manager.dto.response.DeletingAudioFileResponseDto;
 import com.example.manager.dto.response.GettingAudioFileResponseDto;
 import com.example.manager.dto.response.SavingAudioFileResponseDto;
-import com.example.manager.exception.AudioFileNotFoundException;
-import com.example.manager.exception.NotAddInfoToFileException;
-import com.example.manager.exception.NotFormatFileException;
-import com.example.manager.exception.NotUploadFileException;
+import com.example.manager.exception.*;
 import com.example.manager.model.AudioFile;
 import com.example.manager.service.AudioFileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,7 +49,7 @@ public class AudioFileController {
             if (!audioFileService.isAudioFile(requestDto)) {
                 throw new NotFormatFileException("It's not audio file");
             }
-                    audioFileService.save(requestDto);
+            audioFileService.save(requestDto);
             audioFileResponseDto.setStatus(true);
         } catch (IOException ex) {
             throw new NotUploadFileException("File not saved");
@@ -88,7 +86,7 @@ public class AudioFileController {
             @ApiResponse(responseCode = "200", description = "Audio file is not found"),
             @ApiResponse(responseCode = "404", description = "Audio file is not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Audio file can not be downloaded", content = @Content)})
-    @GetMapping("/{id}")
+//    @GetMapping("/{id}")
     public ResponseEntity<GettingAudioFileResponseDto> findAudioFileById(
             @Parameter(description = "id of audio file") @PathVariable long id) {
         GettingAudioFileResponseDto responseDto = new GettingAudioFileResponseDto();
@@ -97,6 +95,30 @@ public class AudioFileController {
             audioFileService.getNewFilePath(audioFileOptional.get().getFileName());
             responseDto.setStatus(true);
             responseDto.setLink(audioFileService.getNewFilePath(audioFileOptional.get().getFileName()));
+        } else {
+            throw new AudioFileNotFoundException(String.format("Audio file with id %d is not found", id));
+        }
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+
+    @Operation(summary = "Delete audio file")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "File is deleted"),
+            @ApiResponse(responseCode = "404", description = "Audio file is not found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Audio file can not be deleted", content = @Content)})
+    @DeleteMapping("/{id}")
+    public ResponseEntity<DeletingAudioFileResponseDto> deleteAudioFile(
+            @Parameter(description = "id of audio file") @PathVariable long id) {
+        DeletingAudioFileResponseDto responseDto = new DeletingAudioFileResponseDto();
+        Optional<AudioFile> audioFileOptional = audioFileService.findById(id);
+        if (audioFileOptional.isPresent()) {
+            try {
+                audioFileService.delete(audioFileOptional.get());
+            } catch (IOException e) {
+                throw new NotDeletedFileException("File is not deleted");
+            }
+            responseDto.setStatus(true);
         } else {
             throw new AudioFileNotFoundException(String.format("Audio file with id %d is not found", id));
         }

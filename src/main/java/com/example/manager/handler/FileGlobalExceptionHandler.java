@@ -61,4 +61,14 @@ public class FileGlobalExceptionHandler {
                 exception.getLocalizedMessage());
         return new ResponseEntity<>(data, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<FileNotDeletedData> handlerException(NotDeletedFileException exception) {
+        FileNotDeletedData data = FileNotDeletedData.builder()
+                .info(exception.getMessage()).build();
+        log.error("Exception occurred with HTTP status {}: {}", HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                exception.getLocalizedMessage());
+        return new ResponseEntity<>(data, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
