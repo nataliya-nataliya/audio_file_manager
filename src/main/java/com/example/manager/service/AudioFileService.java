@@ -15,4 +15,6 @@ public interface AudioFileService {
     Optional<AudioFile> findById(long id);
 
     String getNewFilePath(String sourceName);
+
+    boolean isAudioFile(SavingAudioFileRequestDto savingAudioFileRequestDto);
 }

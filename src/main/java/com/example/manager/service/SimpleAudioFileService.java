@@ -6,6 +6,7 @@ import com.example.manager.mapper.AudioFileUpdateMapper;
 import com.example.manager.model.AudioFile;
 import com.example.manager.repository.AudioFileRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -63,5 +64,12 @@ public class SimpleAudioFileService implements AudioFileService {
         if (!Files.exists(directoryPath)) {
             Files.createDirectories(directoryPath);
         }
+    }
+
+    public boolean isAudioFile(SavingAudioFileRequestDto savingAudioFileRequestDto) {
+        Tika tika = new Tika();
+        byte[] fileContent = savingAudioFileRequestDto.getContent();
+        String mimeType = tika.detect(fileContent);
+        return mimeType.startsWith("audio/");
     }
 }

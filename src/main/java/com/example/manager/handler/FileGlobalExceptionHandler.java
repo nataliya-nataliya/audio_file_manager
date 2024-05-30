@@ -1,9 +1,6 @@
 package com.example.manager.handler;
 
-import com.example.manager.exception.AudioFileNotFoundException;
-import com.example.manager.exception.NotAddInfoToFileException;
-import com.example.manager.exception.NotDownloadFileException;
-import com.example.manager.exception.NotUploadFileException;
+import com.example.manager.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,5 +50,15 @@ public class FileGlobalExceptionHandler {
         log.error("Exception occurred with HTTP status {}: {}", HttpStatus.CONFLICT.value(),
                 exception.getLocalizedMessage());
         return new ResponseEntity<>(data, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    public ResponseEntity<FileNotFormatData> handlerException(NotFormatFileException exception) {
+        FileNotFormatData data = FileNotFormatData.builder()
+                .info(exception.getMessage()).build();
+        log.error("Exception occurred with HTTP status {}: {}", HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(),
+                exception.getLocalizedMessage());
+        return new ResponseEntity<>(data, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 }
