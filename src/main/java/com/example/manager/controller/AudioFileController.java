@@ -2,7 +2,10 @@ package com.example.manager.controller;
 
 import com.example.manager.dto.request.SavingAudioFileInfoRequestDto;
 import com.example.manager.dto.request.SavingAudioFileRequestDto;
-import com.example.manager.dto.response.*;
+import com.example.manager.dto.response.AddingInfoAudioFileResponseDto;
+import com.example.manager.dto.response.DeletingAudioFileResponseDto;
+import com.example.manager.dto.response.GettingAudioFileInfoResponseDto;
+import com.example.manager.dto.response.SavingAudioFileResponseDto;
 import com.example.manager.exception.*;
 import com.example.manager.model.AudioFile;
 import com.example.manager.service.AudioFileService;
@@ -14,6 +17,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -84,18 +89,20 @@ public class AudioFileController {
             @ApiResponse(responseCode = "404", description = "Audio file is not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Audio file can not be downloaded", content = @Content)})
     @GetMapping("/{id}")
-    public ResponseEntity<GettingAudioFileResponseDto> findAudioFileById(
+    public ResponseEntity<Resource> getAudioFileById(
             @Parameter(description = "id of audio file") @PathVariable long id) {
-        GettingAudioFileResponseDto responseDto = new GettingAudioFileResponseDto();
         Optional<AudioFile> audioFileOptional = audioFileService.findById(id);
         if (audioFileOptional.isPresent()) {
-            audioFileService.getNewFilePath(audioFileOptional.get().getFileName());
-            responseDto.setStatus(true);
-            responseDto.setLink(audioFileService.getNewFilePath(audioFileOptional.get().getFileName()));
+            Resource file = audioFileService.getFile(audioFileOptional.get());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"");
+            headers.add("status", "true");
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(file);
         } else {
             throw new AudioFileNotFoundException(String.format("Audio file with id %d is not found", id));
         }
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
 
@@ -139,6 +146,26 @@ public class AudioFileController {
             throw new AudioFileNotFoundException(String.format("Audio file with id %d is not found", id));
         }
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/{id}/getfile")
+    public ResponseEntity<Resource> getFile(@PathVariable long id) {
+        AudioFile audioFile = audioFileService.findById(id).get();
+        Resource file = audioFileService.getFile(audioFile);
+        if (file != null) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"");
+            headers.add("status", "true");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(file);
+        } else {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("status", "false");
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
     }
 
 }
