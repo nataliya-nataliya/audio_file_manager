@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class AudioFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     private LocalDateTime date = LocalDateTime.now();
 

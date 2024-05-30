@@ -72,4 +72,11 @@ public class SimpleAudioFileService implements AudioFileService {
         String mimeType = tika.detect(fileContent);
         return mimeType.startsWith("audio/");
     }
+
+    @Override
+    public void delete(AudioFile audioFile) throws IOException {
+        Path filePath = Paths.get(storageDirectory + java.io.File.separator + audioFile.getFileName());
+        Files.deleteIfExists(filePath);
+        audioFileRepository.deleteById(audioFile.getId());
+    }
 }

@@ -17,4 +17,6 @@ public interface AudioFileService {
     String getNewFilePath(String sourceName);
 
     boolean isAudioFile(SavingAudioFileRequestDto savingAudioFileRequestDto);
+
+    void delete(AudioFile audioFile) throws IOException;
 }
