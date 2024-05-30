@@ -71,4 +71,15 @@ public class FileGlobalExceptionHandler {
                 exception.getLocalizedMessage());
         return new ResponseEntity<>(data, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<UnauthorizedTokenData> handlerException(UnauthorizedTokenException exception) {
+        UnauthorizedTokenData data = UnauthorizedTokenData.builder()
+                .info(exception.getMessage()).build();
+        log.error("Exception occurred with HTTP status {}: {}", HttpStatus.UNAUTHORIZED.value(),
+                exception.getLocalizedMessage());
+        return new ResponseEntity<>(data, HttpStatus.UNAUTHORIZED);
+    }
 }

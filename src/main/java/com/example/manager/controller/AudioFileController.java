@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,8 @@ import java.util.Optional;
 @Slf4j
 public class AudioFileController {
     private final AudioFileService audioFileService;
-
+    @Value("${fake.access.token}")
+    private String fakeToken;
 
     @Operation(summary = "Save audio file")
     @ApiResponses(value = {
@@ -42,9 +44,14 @@ public class AudioFileController {
             @ApiResponse(responseCode = "415", description = "It's not audio file"),
             @ApiResponse(responseCode = "500", description = "Audio file can not be uploaded", content = @Content)})
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SavingAudioFileResponseDto> saveAudioFile(@Parameter(description = "input audio file")
-                                                                    @Schema(type = "string", format = "binary")
-                                                                    @RequestParam MultipartFile file) {
+    public ResponseEntity<SavingAudioFileResponseDto> saveAudioFile(
+            @RequestHeader String token,
+            @Parameter(description = "input audio file")
+            @Schema(type = "string", format = "binary")
+            @RequestParam MultipartFile file) {
+        if (!fakeToken.equals(token)) {
+            throw new UnauthorizedTokenException();
+        }
         SavingAudioFileResponseDto audioFileResponseDto = new SavingAudioFileResponseDto();
         try {
             SavingAudioFileRequestDto requestDto = new SavingAudioFileRequestDto(file.getOriginalFilename(), file.getBytes());
@@ -66,8 +73,12 @@ public class AudioFileController {
             @ApiResponse(responseCode = "409", description = "Info about audio file is not added", content = @Content)})
     @PutMapping("/{id}")
     public ResponseEntity<AddingInfoAudioFileResponseDto> addInfoAboutAudioFile(
+            @RequestHeader String token,
             @Parameter(description = "id of audio file") @PathVariable long id,
             @RequestBody SavingAudioFileInfoRequestDto infoRequestDto) {
+        if (!fakeToken.equals(token)) {
+            throw new UnauthorizedTokenException();
+        }
         AddingInfoAudioFileResponseDto responseDto = new AddingInfoAudioFileResponseDto();
         Optional<AudioFile> audioFileOptional = audioFileService.findById(id);
         if (audioFileOptional.isPresent()) {
@@ -83,14 +94,18 @@ public class AudioFileController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @Operation(summary = "Find audio file by id")
+    @Operation(summary = "Get audio file by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Audio file is not found"),
             @ApiResponse(responseCode = "404", description = "Audio file is not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Audio file can not be downloaded", content = @Content)})
     @GetMapping("/{id}")
     public ResponseEntity<Resource> getAudioFileById(
+            @RequestHeader String token,
             @Parameter(description = "id of audio file") @PathVariable long id) {
+        if (!fakeToken.equals(token)) {
+            throw new UnauthorizedTokenException();
+        }
         Optional<AudioFile> audioFileOptional = audioFileService.findById(id);
         if (audioFileOptional.isPresent()) {
             Resource file = audioFileService.getFile(audioFileOptional.get());
@@ -105,7 +120,6 @@ public class AudioFileController {
         }
     }
 
-
     @Operation(summary = "Delete audio file")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "File is deleted"),
@@ -113,7 +127,11 @@ public class AudioFileController {
             @ApiResponse(responseCode = "500", description = "Audio file can not be deleted", content = @Content)})
     @DeleteMapping("/{id}")
     public ResponseEntity<DeletingAudioFileResponseDto> deleteAudioFile(
+            @RequestHeader String token,
             @Parameter(description = "id of audio file") @PathVariable long id) {
+        if (!fakeToken.equals(token)) {
+            throw new UnauthorizedTokenException();
+        }
         DeletingAudioFileResponseDto responseDto = new DeletingAudioFileResponseDto();
         Optional<AudioFile> audioFileOptional = audioFileService.findById(id);
         if (audioFileOptional.isPresent()) {
@@ -136,7 +154,11 @@ public class AudioFileController {
             @ApiResponse(responseCode = "404", description = "Audio file is not found", content = @Content)})
     @GetMapping("/{id}/info")
     public ResponseEntity<GettingAudioFileInfoResponseDto> findInfoAudioFileById(
+            @RequestHeader String token,
             @Parameter(description = "id of audio file") @PathVariable long id) {
+        if (!fakeToken.equals(token)) {
+            throw new UnauthorizedTokenException();
+        }
         GettingAudioFileInfoResponseDto responseDto;
         Optional<AudioFile> audioFileOptional = audioFileService.findById(id);
         if (audioFileOptional.isPresent()) {
@@ -146,26 +168,6 @@ public class AudioFileController {
             throw new AudioFileNotFoundException(String.format("Audio file with id %d is not found", id));
         }
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
-    }
-
-
-    @GetMapping("/{id}/getfile")
-    public ResponseEntity<Resource> getFile(@PathVariable long id) {
-        AudioFile audioFile = audioFileService.findById(id).get();
-        Resource file = audioFileService.getFile(audioFile);
-        if (file != null) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"");
-            headers.add("status", "true");
-
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(file);
-        } else {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("status", "false");
-            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
-        }
     }
 
 }
