@@ -2,6 +2,7 @@ package com.example.manager.service;
 
 import com.example.manager.dto.request.SavingAudioFileInfoRequestDto;
 import com.example.manager.dto.request.SavingAudioFileRequestDto;
+import com.example.manager.dto.response.GettingAudioFileInfoResponseDto;
 import com.example.manager.model.AudioFile;
 
 import java.io.IOException;
@@ -19,4 +20,6 @@ public interface AudioFileService {
     boolean isAudioFile(SavingAudioFileRequestDto savingAudioFileRequestDto);
 
     void delete(AudioFile audioFile) throws IOException;
+
+    GettingAudioFileInfoResponseDto getAudioFileInfo(AudioFile audioFile);
 }

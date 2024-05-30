@@ -8,6 +8,8 @@ import lombok.*;
 @Getter
 @Setter
 public class GettingAudioFileResponseDto {
+
     private boolean status;
+
     private String link;
 }
