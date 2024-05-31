@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -32,7 +31,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/files")
 @RequiredArgsConstructor
-@Slf4j
 public class AudioFileController {
     private final AudioFileService audioFileService;
     @Value("${fake.access.token}")
@@ -41,7 +39,7 @@ public class AudioFileController {
     @Operation(summary = "Save audio file")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Audio file is saved"),
-            @ApiResponse(responseCode = "415", description = "It's not audio file"),
+            @ApiResponse(responseCode = "415", description = "It's not audio file", content = @Content),
             @ApiResponse(responseCode = "500", description = "Audio file can not be uploaded", content = @Content)})
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SavingAudioFileResponseDto> saveAudioFile(
@@ -169,5 +167,4 @@ public class AudioFileController {
         }
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
-
 }
