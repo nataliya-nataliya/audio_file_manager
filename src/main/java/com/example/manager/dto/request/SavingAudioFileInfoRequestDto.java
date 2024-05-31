@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
+//TODO Добавить валидаторы
 public class SavingAudioFileInfoRequestDto {
     @Schema(description = "date of audio file", example = "2000-01-31T14:30:00")
     String date;

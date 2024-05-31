@@ -7,6 +7,7 @@ import com.example.manager.mapper.AudioFileUpdateMapper;
 import com.example.manager.model.AudioFile;
 import com.example.manager.repository.AudioFileRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SimpleAudioFileService implements AudioFileService {
     private final AudioFileRepository audioFileRepository;
     @Value("${file.directory}")
@@ -39,6 +41,7 @@ public class SimpleAudioFileService implements AudioFileService {
                 AudioFile.builder()
                         .fileName(savingAudioFileRequestDto.getName())
                         .build());
+        log.info("Audio file saved successfully: {}", savingAudioFileRequestDto.getName());
     }
 
     @Override
@@ -62,12 +65,14 @@ public class SimpleAudioFileService implements AudioFileService {
 
     private void writeFileBytes(String path, byte[] content) throws IOException {
         Files.write(Path.of(path), content);
+        log.debug("File bytes written successfully to path: {}", path);
     }
 
     private void createDirectory() throws IOException {
         Path directoryPath = Paths.get(storageDirectory);
         if (!Files.exists(directoryPath)) {
             Files.createDirectories(directoryPath);
+            log.debug("Storage directory created successfully: {}", storageDirectory);
         }
     }
 
@@ -83,6 +88,7 @@ public class SimpleAudioFileService implements AudioFileService {
         Path filePath = Paths.get(storageDirectory + java.io.File.separator + audioFile.getFileName());
         Files.deleteIfExists(filePath);
         audioFileRepository.deleteById(audioFile.getId());
+        log.info("Audio file deleted successfully: {}", audioFile.getId());
     }
 
     @Override
@@ -102,8 +108,9 @@ public class SimpleAudioFileService implements AudioFileService {
         Resource fileResource = null;
         try {
             fileResource = new org.springframework.core.io.UrlResource(filePath.toUri());
+            log.debug("File resource retrieved successfully for audio file: {}", audioFile.getFileName());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to get file resource for audio file: {}", audioFile.getFileName(), e);
         }
         return fileResource;
     }

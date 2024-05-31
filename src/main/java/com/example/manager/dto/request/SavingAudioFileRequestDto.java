@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
+//TODO Добавить валидаторы
 public class SavingAudioFileRequestDto {
     private String name;
 
